@@ -1,0 +1,125 @@
+CREATE DATABASE IF NOT EXISTS confei;
+USE confei;
+
+CREATE TABLE tbFuncionario (
+    CPFFun CHAR(11) PRIMARY KEY,
+    NomeFun CHAR(50),
+    SexoFun CHAR(1),
+    TelefoneFun CHAR(15),
+    EmailFun CHAR(50),
+    EnderecoFun CHAR(100),
+    IdadeFun NUMERIC,
+    CargoFun CHAR(30),
+    Quantidade_VendidaFun NUMERIC,
+    Quantidade_ProdutoFun NUMERIC,
+    DataFun DATE,
+    fk_Pedido_ID_PedidoFun INT
+);
+
+CREATE TABLE tbPedido (
+    ID_PedidoPed INT PRIMARY KEY,
+    QuantidadePed INT,
+    DataPed DATE,
+    Valor_totalPed DECIMAL(10, 2),
+    Cliente_nomePed CHAR(50),
+    fk_Cliente_CPFPed CHAR(11),
+    FOREIGN KEY (fk_Cliente_CPFPed) REFERENCES tbCliente(CPFCli) ON DELETE RESTRICT
+);
+
+CREATE TABLE tbProduto (
+    ID_Produto INT PRIMARY KEY,
+    PrecoPro DECIMAL(10, 2),
+    Data_ValidadePro DATE,
+    Data_CriacaoPro DATE,
+    CategoriaPro VARCHAR(50),
+    fk_Funcionario_CPFPro CHAR(11),
+    FOREIGN KEY (fk_Funcionario_CPFPro) REFERENCES tbFuncionario(CPFFun) ON DELETE RESTRICT
+);
+
+CREATE TABLE tbCliente (
+    CPFCli CHAR(11) PRIMARY KEY,
+    NomeCli VARCHAR(50),
+    Metodo_pagamentoCli VARCHAR(30),
+    fk_Confeitaria_pkID_PedidoCli INT,
+    FOREIGN KEY (fk_Confeitaria_pkID_PedidoCli) REFERENCES tbConfeitaria(pkID_PedidoCon) ON DELETE RESTRICT
+);
+
+CREATE TABLE tbConfeitaria (
+    pkID_PedidoCon INT PRIMARY KEY,
+    ID_PedidoCon INT,
+    NomeCon VARCHAR(50),
+    Data_pedidoCon DATE,
+    valor_recebidoCon DECIMAL(10, 2)
+);
+
+CREATE TABLE tbAtende (
+    fk_Funcionario_CPFAte CHAR(11),
+    fk_Cliente_CPFAte CHAR(11),
+    PRIMARY KEY (fk_Funcionario_CPFAte, fk_Cliente_CPFAte),
+    FOREIGN KEY (fk_Funcionario_CPFAte) REFERENCES tbFuncionario(CPFFun) ON DELETE RESTRICT,
+    FOREIGN KEY (fk_Cliente_CPFAte) REFERENCES tbCliente(CPFCli) ON DELETE RESTRICT
+);
+
+-- Inserindo dados nas tabelas
+INSERT INTO tbFuncionario (CPFFun, NomeFun, SexoFun, TelefoneFun, EmailFun, EnderecoFun, IdadeFun, CargoFun, Quantidade_VendidaFun, Quantidade_ProdutoFun, DataFun, fk_Pedido_ID_PedidoFun)
+VALUES ('98765432100', 'João Pereira', 'M', '11998761234', 'joao.pereira@gmail.com', 'Av. Paulista, 500, São Paulo', 35, 'Atendente', 90, 100, '2010-02-15', 1),
+('56473829100', 'Ana Souza', 'F', '11987655432', 'ana.souza@gmail.com', 'Rua das Flores, 200, Campinas', 29, 'Auxiliar de confeitaria', 85, 110, '2018-05-20', 2),
+('34567283910', 'Carlos Alberto', 'M', '11999887766', 'carlos.alberto@gmail.com', 'Av. Brasil, 350, Rio de Janeiro', 42, 'Gerente', 70, 90, '2015-03-10', 3),
+('75648392010', 'Juliana Costa', 'F', '11988997766', 'juliana.costa@gmail.com', 'Rua da Paz, 10, Belo Horizonte', 31, 'Recepcionista', 65, 85, '2021-11-05', 4);
+
+INSERT INTO tbCliente (CPFCli, NomeCli, Metodo_pagamentoCli, fk_Confeitaria_pkID_PedidoCli)
+VALUES ('23456789012', 'Fernanda Lima', 'Dinheiro', 2),
+('34567890123', 'Pedro Alves', 'Cartão de Débito', 3),
+('45678901234', 'Luciana Santos', 'PIX', 4),
+('56789012345', 'Marcos Vinicius', 'Cartão de Crédito', 5),
+('67890123456', 'Patrícia Almeida', 'Dinheiro', 6),
+('78901234567', 'Roberto Carlos', 'PIX', 7),
+('89012345678', 'Sandra Regina', 'Cartão de Débito', 8),
+('90123456789', 'Tiago Souza', 'Cartão de Crédito', 9),
+('01234567890', 'Mariana Lopes', 'PIX', 10);
+
+INSERT INTO tbPedido (ID_PedidoPed, QuantidadePed, DataPed, Valor_totalPed, Cliente_nomePed, fk_Cliente_CPFPed)
+VALUES (2, 3, '2024-11-11', 30.00, 'Fernanda Lima', '23456789012'),
+(3, 4, '2024-11-11', 20.00, 'Pedro Alves', '34567890123'),
+(4, 2, '2024-11-12', 40.00, 'Luciana Santos', '45678901234'),
+(5, 1, '2024-11-12', 10.00, 'Marcos Vinicius', '56789012345'),
+(6, 6, '2024-11-13', 50.00, 'Patrícia Almeida', '67890123456'),
+(7, 7, '2024-11-13', 70.00, 'Roberto Carlos', '78901234567'),
+(8, 5, '2024-11-14', 35.00, 'Sandra Regina', '89012345678'),
+(9, 2, '2024-11-14', 25.00, 'Tiago Souza', '90123456789'),
+(10, 8, '2024-11-15', 80.00, 'Mariana Lopes', '01234567890');
+
+INSERT INTO tbProduto (ID_Produto, PrecoPro, Data_ValidadePro, Data_CriacaoPro, CategoriaPro, fk_Funcionario_CPFPro)
+VALUES (2, 6.00, '2025-11-30', '2024-11-10', 'Ovomaltine', '98765432100'),
+(3, 5.50, '2025-12-15', '2024-11-10', 'Chiclete', '56473829100'),
+(4, 7.00, '2025-12-31', '2024-11-11', 'Laka', '34567283910'),
+(5, 8.00, '2025-10-30', '2024-11-11', 'Chocolate', '75648392010'),
+(6, 9.00, '2025-12-25', '2024-11-11', 'Ouro Branco', '98765432100'),
+(7, 10.00, '2025-12-31', '2024-11-12', 'Ninho c/Nutella', '56473829100'),
+(8, 4.50, '2025-11-30', '2024-11-12', 'Ovomaltine', '34567283910'),
+(9, 6.75, '2025-10-31', '2024-11-12', 'Chiclete', '75648392010'),
+(10, 5.25, '2025-12-20', '2024-11-13', 'Laka', '98765432100');
+
+INSERT INTO tbConfeitaria (pkID_PedidoCon, ID_PedidoCon, NomeCon, Data_pedidoCon, valor_recebidoCon)
+VALUES (2, 102, 'Bolo de Ovomaltine', '2024-11-10', 20.00),
+(3, 103, 'Bolo de Chiclete', '2024-11-11', 30.00),
+(4, 104, 'Bolo de Laka', '2024-11-11', 40.00),
+(5, 105, 'Bolo de Chocolate', '2024-11-12', 50.00),
+(6, 106, 'Bolo de Ouro Branco', '2024-11-13', 60.00),
+(7, 107, 'Bolo de Ninho c/Nutella', '2024-11-13', 70.00),
+(8, 108, 'Bolo de Ovomaltine', '2024-11-14', 80.00),
+(9, 109, 'Bolo de Chiclete', '2024-11-14', 90.00),
+(10, 110, 'Bolo de Laka', '2024-11-15', 100.00);
+
+
+-- Inserindo valores na tabela tbAtende
+INSERT INTO tbAtende (fk_Funcionario_CPFAte, fk_Cliente_CPFAte)
+VALUES ('98765432100', '23456789012'),
+('56473829100', '34567890123'),
+('34567283910', '45678901234'),
+('75648392010', '56789012345'),
+('87901245664', '67890123456'),
+('98765432100', '78901234567'),
+('56473829100', '89012345678'),
+('34567283910', '90123456789'),
+('75648392010', '01234567890');

@@ -1,0 +1,25 @@
+select * from tbProduto;
+
+SELECT ID_PedidoPed, QuantidadePed, DataPed, Valor_totalPed, Cliente_nomePed
+FROM tbPedido
+WHERE Valor_totalPed > 50.00
+ORDER BY Valor_totalPed DESC;
+
+SELECT NomeFun, CargoFun, Quantidade_VendidaFun, TelefoneFun
+FROM tbFuncionario
+WHERE Quantidade_VendidaFun > 80;
+
+SELECT ID_Produto, CategoriaPro, PrecoPro, Data_ValidadePro
+FROM tbProduto
+WHERE YEAR(Data_ValidadePro) = 2025;
+
+SELECT AVG(Quantidade_VendidaFun) AS Media_Produtos_Vendidos FROM tbFuncionario;
+
+SELECT 
+    c.NomeCli AS Nome_Cliente,
+    p.ID_PedidoPed AS ID_Pedido,
+    p.QuantidadePed AS Quantidade,
+    p.Valor_totalPed AS Valor_Total
+FROM  tbPedido p
+JOIN tbCliente c
+ON    p.fk_Cliente_CPFPed = c.CPFCli;
